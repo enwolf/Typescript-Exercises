@@ -1,0 +1,27 @@
+/**
+ * @file tsconfig.json
+ * @description TypeScript compiler configuration file.
+ *              This file defines how the TypeScript compiler
+ *              compiles project source files into JavaScript.
+ *
+ * @compilerOptions
+ * target     - Specifies the ECMAScript version for the compiled output.
+ * module     - Defines the module system used in generated JavaScript.
+ * sourceMap  - Enables generation of source map files for debugging.
+ * outDir     - Directory where compiled JavaScript files will be placed.
+ * rootDir    - Root directory containing the TypeScript source files.
+ *
+ * @author Robin Phillis
+ * @version 1.0
+ * @date 2026
+ */
+{
+  "compilerOptions": 
+  {
+    "target": "ES5",
+    "module": "CommonJS",
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "./"
+  }
+}
