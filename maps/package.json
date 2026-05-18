@@ -9,6 +9,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/google.maps": "^3.51.0",
-    "faker": "4.1.0"
+    "faker": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/faker": "^5.5.9"
   }
 }
