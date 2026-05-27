@@ -1,3 +1,7 @@
 node_modules/
-dist/
 .parcel-cache/
+dist/
+src/**/*.d.ts
+src/**/*.d.ts.map
+src/**/*.js
+src/**/*.js.map
