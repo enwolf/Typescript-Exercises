@@ -1,7 +1,8 @@
 /// <reference types="@types/google.maps" />
-/*import { User } from "./User";
+import { User } from "./User";
 import { Company } from "./Company";
 
+/*
 const user = new User();
 console.log(user);
 
@@ -10,13 +11,15 @@ console.log(company);*/
 
 import { CustomeMap } from "./CustomeMap";
 
-new CustomeMap("map");
+const user = new User();
+const company = new Company();
+const customMap = new CustomeMap("map");
+
+customMap.addMarker(user);
+customMap.addMarker(company);
+
+//customMap.addUserMarker(user);
+//customMap.addCompanyMarker(company);
 
 
-
-
-"AIzaSyAXwRNFksnxRXxiGVTLeQGaWOyJ7qJzH8M -old" 
-
-
-
-"AIzaSyDeKJ9pWkXF5wVTfKCkL_8SmomMqd_2fMs -use me!"
+"AIzaSyDeKJ9pWkXF5wVTfKCkL_8SmomMqd_2fMs -use me custom map API Key!"
