@@ -3,11 +3,13 @@
 //Instructions to every other classs
 //on hnow they can be an argument to "addMarker"
 
-interface Mappable {
+export interface Mappable {
     location: {
         latitude: number;
         longitude: number;
     };
+
+    markerContent(): string;
 
 }
 
@@ -42,7 +44,7 @@ export class CustomeMap {
 
         marker.addListener("click", () => {
             const infowWindow = new google.maps.InfoWindow({
-                content: "Hi There!"
+                content: mappable.markerContent()
             });
 
             infowWindow.open(this.googleMap, marker);
