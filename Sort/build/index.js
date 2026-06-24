@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-console.log("Hello, there!");
+console.log(123);
 const logSomthing = () => {
     console.log("somthing");
 };
-//# sourceMappingURL=index.js.map
+logSomthing();
