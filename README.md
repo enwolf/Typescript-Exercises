@@ -5,7 +5,7 @@ A collection of small TypeScript projects built while learning TypeScript fundam
 ## Projects
 
 - [`maps/`](./maps) — A Google Maps integration demo using a shared `Mappable` interface, with fake `User` and `Company` data generated via `faker`. Bundled with Parcel.
-- [`sort/`](./sort) — Sorting algorithm implementations in TypeScript, with a dev workflow powered by `nodemon` and `concurrently`.
+- [`Sort/`](./Sort) — Sorting algorithm implementations in TypeScript, with a dev workflow powered by `nodemon` and `concurrently`.
 
 Each project folder has its own `README.md` with setup and run instructions specific to that project.
 
