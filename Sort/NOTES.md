@@ -192,3 +192,32 @@ sorter.sort();
 console.log(sorter.collection);
 ```
 
+---
+
+## 🏗️ Refactoring Phase: The Intermediate Solution (Decoupled Classes)
+
+### 📋 Key Conceptual Takeaways
+* **Delegation of Responsibility:** We stripped data mutation out of `Sorter`. `Sorter` now only manages the core sorting steps, while `NumbersCollection` owns the actual index swapping and comparisons.
+* **Cleaner Loops:** The nested loops no longer contain messy array bracket logic or type guards. It reads almost like pure human logic: `if compare, then swap`.
+* **The Semicolon Rule:** Ensured proper line termination inside the collection mutator to maintain consistent OOP styling conventions.
+
+### 💻 Refactored Sorter Blueprint
+```typescript
+import { NumbersCollection } from "./NumbersCollection"
+    
+export class Sorter {
+    constructor(public collection: NumbersCollection ) {}
+   
+    sort(): void {
+        const { length } = this.collection;
+
+        for (let i = 0; i < length; i++) {
+            for (let j = 0; j < length - i - 1; j++) {
+                if (this.collection.compare(j, j + 1)) {                                   
+                    this.collection.swap(j, j + 1);
+                }       
+            }
+        }
+    }
+}
+```
