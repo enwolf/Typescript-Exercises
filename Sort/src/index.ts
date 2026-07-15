@@ -13,7 +13,7 @@ class Sorter {
      *       this.collection = collection;
      *   }
      */
-    constructor(public collection: number[]) {}
+    constructor(public collection: number[] | string ) {}
    
     /**
      * Bubble Sort
@@ -22,7 +22,7 @@ class Sorter {
      * VALUES (not indexes - the indexes j and j+1 never move, only the
      * values stored at those positions get swapped).
      *
-     * Outer loop (i): tracks how many passes have completed. Each full pass
+     * Outer loop (i): tracks how many passes have completed. Each full pass 
      * pushes the largest remaining unsorted value to its correct position
      * at the end of the array.
      *
@@ -42,7 +42,7 @@ class Sorter {
      * trade places.
      */
     
-     sort(): void
+    sort(): void
     {
         //same as const length = this.collection.length; Both do exactly the same thing.
         //The curly braces { } tell TypeScript "copy the value of the property called length
@@ -53,13 +53,43 @@ class Sorter {
         {
             for (let j = 0; j < length -i -1; j++)
             {
+
+           /**
+            *  
+            * If collection is an array, do this logic, referad to as a "typeGuard" in TypeScript.
+            * This is a way to check the type of a variable at runtime.
+            * The other reason we are using type guards is because we are using a union type for the collection property,     
+            * which means it can be either a number[] or a string. We need to check the type of the collection before 
+            * we can perform any operations on it, other wise we are only limted to working with the properties and methods 
+            * that are common to both types, which is not what we want.
+            * 
+            */
+                  
+            if(this.collection instanceof Array)
+            {   //Collection === number[]
+
+                //All of htis only works if collection is a number[]
+                //If collection is an array of numbers
                 if (this.collection[j] > this.collection[j + 1])
-                {
+                {                    
                     const leftside = this.collection[j];
                     this.collection[j] = this.collection [j + 1];
                     this.collection[j + 1] = leftside;                    
                 }
             }       
+
+            // Only going to work if collection is a string.
+            //If collection is a string, do this logic instead:
+            //~~~logic to compare and swap characters in a string goes here~~~
+                if (typeof this.collection === 'string')
+                {
+
+                    
+                }
+
+
+
+            }
         }
     }
 }
