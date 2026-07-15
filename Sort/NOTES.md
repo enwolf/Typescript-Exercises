@@ -1,5 +1,12 @@
 # 📓 Developer Learning Log
 
+# 📓 Developer Learning Log
+
+## ⚡ Quick Run
+From the `Sort/` folder:
+```bash
+npm start
+
 ## 🧩 TypeScript Parameter Shorthand & Bubble Sort Mechanics
 
 ### 📋 Key Conceptual Takeaways
