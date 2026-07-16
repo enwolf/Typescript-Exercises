@@ -221,3 +221,114 @@ export class Sorter {
     }
 }
 ```
+---
+
+## 🏗️ Refactoring Phase: The Elegant Solution (Interface Polymorphism)
+
+### 📋 Key Conceptual Takeaways
+* **Loose Coupling via Interfaces:** By changing the constructor to accept the `Sortable` interface rather than a concrete class, `Sorter` can now sort *any* data structure (arrays, strings, linked lists) without needing modification [source: 1.3.3, 1.3.4].
+* **Structural Typing / Duck Typing:** TypeScript uses structural typing [source: 1.3.4]. Unlike Java, a collection class doesn't explicitly need an `implements Sortable` keyword [source: 1.3.1]. As long as the class has `length`, `compare()`, and `swap()`, TypeScript permits it automatically!
+
+### 💻 Production Blueprint with Consolidated Comments
+```typescript
+interface Sortable {
+    length: number;
+    compare(leftindex: number, rightIndex: number): boolean;
+    swap (leftIndex: number, RightIndex: number): void;
+}
+
+export class Sorter {
+    /**
+     * TypeScript parameter shorthand: "public" directly in front 
+     * of a constructor parameter declares "collection" as a property 
+     * and assigns the argument to "this.collection" automatically.
+     */
+    constructor(public collection: Sortable ) {}
+   
+    /**
+     * Standard Bubble Sort implementation.
+     * Iteratively bubbles the largest remaining values to the end.
+     */
+    sort(): void
+    {
+        const { length } = this.collection;
+
+        for (let i = 0; i < length; i++)
+        {
+            for (let j = 0; j < length -i -1; j++)
+            {
+                if(this.collection.compare(j, j + 1))
+                {                                   
+                    this.collection.swap(j, j+1);
+                }       
+            }
+        }
+    }
+}
+```
+---
+
+## 🔤 String Sorting Mechanics: CharactersCollection
+
+### 📋 Key Conceptual Takeaways
+* **ASCII Value Trap:** In the standard character set, uppercase letters (`A-Z: 65-90`) have lower numeric values than lowercase letters (`a-z: 97-122`). Without normalization, capitals always get stuck at the front of a sorted collection [INDEX].
+* **Case-Insensitive Normalization:** Using `.toLowerCase()` inside `compare()` normalizes character weights for true alphabetical sorting without mutating the actual casing of the string dataset.
+* **String Immutability Bypass:** JavaScript strings are immutable. To swap characters by index, the `swap()` method converts the string to a mutable array via `.split("")`, shifts the indices, and compiles it back into a string using `.join("")`.
+
+### 💻 CharactersCollection Implementation
+```typescript
+export class CharactersCollection
+{
+
+    constructor(public data: string) { }
+
+    get length(): number 
+    {
+        return this.data.length;
+    }
+
+
+    compare(leftIndex: number, rightIndex: number): boolean 
+    {
+        return (this.data[leftIndex].toLowerCase() > this.data[rightIndex].toLowerCase());
+    }
+
+
+    swap(leftIndex: number, rightIndex: number): void 
+    {
+        const characters = this.data.split("");
+
+        const leftHand = characters[leftIndex];
+        characters[leftIndex] = characters[rightIndex];
+        characters[rightIndex] = leftHand;
+
+        this.data = characters.join("");
+    }
+}
+```
+---
+
+## 🚦 Execution Phase: Testing Interface Polymorphism in index.ts
+
+### 📋 Key Conceptual Takeaways
+* **Pluggable Architecture:** Because the `Sorter` class demands a `Sortable` interface instead of a raw array, we can seamlessly swap out the data structure instance in our main execution file without changing a single line of our sorting engine algorithm [source: 3, 4].
+* **Preserving Reference Code:** Commenting out previous dataset execution blocks (like `NumbersCollection`) allows us to easily flip our runtime context back and forth between numbers and text configurations for fast debugging [source: 3].
+
+### 💻 Main Execution Sandbox (`index.ts`)
+```typescript
+import { Sorter } from "./Sorter";
+import { NumbersCollection } from "./NumbersCollection";
+import { CharactersCollection } from "./CharactersCollection";
+
+// Test Case: Validating case-insensitive alphabetical string sorting
+const charactersCollection = new CharactersCollection("Xaayb");
+const sorter = new Sorter(charactersCollection);
+sorter.sort();
+console.log(charactersCollection.data);
+
+// Historical Sandbox: Commented out to isolate string sorting verification
+//const numbersCollection = new NumbersCollection([10000, 10, 3, -5, 0]);
+//const sorter = new Sorter(numbersCollection);
+//sorter.sort();
+//console.log(numbersCollection.data);
+```
