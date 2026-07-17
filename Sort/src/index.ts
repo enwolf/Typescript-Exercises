@@ -3,8 +3,14 @@ import { NumbersCollection } from "./NumbersCollection";
 import { CharactersCollection } from "./CharactersCollection";
 import { LinkedList } from "./LinkedList";
 
-
-
+/**
+ * ============================================================================
+ * MODULE: index.ts
+ * ROLE: Main Application Entry Point & Sandbox Environment.
+ * RESPONSIBILITY: Instantiates data structures, hooks them into the sorting 
+ *                 engine, and logs final results to execute manual tests.
+ * ==================
+ */
 
 //const charactersCollection = new CharactersCollection("Xaayb")
 //const sorter = new Sorter(charactersCollection);
