@@ -11,35 +11,36 @@ Instead of wrapping external collections inside a sorter object middleman, this 
 classDiagram
     class Sorter {
         <<Abstract>>
-        +int length*
-        +compare(int leftIndex, int rightIndex) bool*
-        +swap(int leftIndex, int rightIndex) void*
-        +sort() void
+        +length: number
+        +compare(leftIndex, rightIndex) : boolean
+        +swap(leftIndex, rightIndex) : void
+        +sort() : void
     }
     class NumbersCollection {
-        +int[] data
-        +get length() int
-        +compare(int leftIndex, int rightIndex) bool
-        +swap(int leftIndex, int rightIndex) void
+        +data: number[]
+        +length: number
+        +compare(leftIndex, rightIndex) : boolean
+        +swap(leftIndex, rightIndex) : void
     }
     class CharactersCollection {
-        +string data
-        +get length() int
-        +compare(int leftIndex, int rightIndex) bool
-        +swap(int leftIndex, int rightIndex) void
+        +data: string
+        +length: number
+        +compare(leftIndex, rightIndex) : boolean
+        +swap(leftIndex, rightIndex) : void
     }
     class LinkedList {
-        +Node head
-        +get length() int
-        +add(int data) void
-        +at(int index) Node
-        +compare(int leftIndex, int rightIndex) bool
-        +swap(int leftIndex, int rightIndex) void
-        +print() void
+        +head: Node
+        +length: number
+        +add(data) : void
+        +at(index) : Node
+        +compare(leftIndex, rightIndex) : boolean
+        +swap(leftIndex, rightIndex) : void
+        +print() : void
     }
     Sorter <|-- NumbersCollection
     Sorter <|-- CharactersCollection
     Sorter <|-- LinkedList
+
 
 ```
 
