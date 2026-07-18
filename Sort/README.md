@@ -44,7 +44,6 @@ classDiagram
     Sorter <|-- LinkedList
 
     classDef default fill:#f5f5f5,stroke:#333,stroke-width:1px,color:#ff8c00
-    class Sorter,NumbersCollection,CharactersCollection,LinkedList default
 ```
 
 ### The Abstract Contract
