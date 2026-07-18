@@ -6,8 +6,9 @@ An elegant, highly decoupled object-oriented sorting application built with Type
 
 ## 🏗️ Architecture Design: The Template Method Pattern
 
-Instead of wrapping external collections inside a sorter object middleman, this engine uses class inheritance [source: 11, 13]. The master `Sorter` is a strict abstract parent blueprint that dictates the overarching Bubble Sort algorithm execution flow (`sort()`) [source: 11]. It relies entirely on its child implementations to supply the custom, context-driven data mechanics [source: 11].
+Instead of wrapping external collections inside a sorter object middleman, this engine uses class inheritance. The master `Sorter` is a strict abstract parent blueprint that dictates the overarching Bubble Sort algorithm execution flow (`sort()`). It relies entirely on its child implementations to supply the custom, context-driven data mechanics.
 
+```mermaid
 classDiagram
     class Sorter {
         <<Abstract>>
@@ -40,37 +41,35 @@ classDiagram
     Sorter <|-- NumbersCollection
     Sorter <|-- CharactersCollection
     Sorter <|-- LinkedList
-
-
 ```
 
 ### The Abstract Contract
-Any data structure can instantly acquire direct sorting capabilities simply by extending `Sorter` and satisfying its three mandatory abstract target structures [source: 11]:
-1. `get length(): number` — Exposes the overall size of the dataset [source: 11].
-2. `compare(leftIndex: number, rightIndex: number): boolean` — Custom validation logic evaluating values at two separate indices [source: 11].
-3. `swap(leftIndex: number, rightIndex: number): void` — The physical data mutation steps required to shift values in memory [source: 11].
+Any data structure can instantly acquire direct sorting capabilities simply by extending `Sorter` and satisfying its three mandatory abstract target structures:
+1. `get length(): number` — Exposes the overall size of the dataset.
+2. `compare(leftIndex: number, rightIndex: number): boolean` — Custom validation logic evaluating values at two separate indices.
+3. `swap(leftIndex: number, rightIndex: number): void` — The physical data mutation steps required to shift values in memory.
 
 ---
 
 ## 🗂️ Core Project Modules
 
 ### 🔢 1. NumbersCollection (`src/NumbersCollection.ts`)
-*   **Role:** Handles evaluation and index-based swapping for standard numeric primitives [source: 8].
-*   **Mechanics:** Uses a standard temporary tracking variable to swap numbers directly within a native array [source: 8].
+*   **Role:** Handles evaluation and index-based swapping for standard numeric primitives.
+*   **Mechanics:** Uses a standard temporary tracking variable to swap numbers directly within a native array.
 
 ### 🔤 2. CharactersCollection (`src/CharactersCollection.ts`)
-*   **Role:** Manages a text string for case-insensitive alphabetical sorting [source: 10].
-*   **Mechanics:** Uses `.toLowerCase()` to bypass raw ASCII table value constraints [source: 10]. Resolves native string immutability restrictions by converting the dataset to an array via `.split("")` during the swap step, then re-compiling it with `.join("")` [source: 10].
+*   **Role:** Manages a text string for case-insensitive alphabetical sorting.
+*   **Mechanics:** Uses `.toLowerCase()` to bypass raw ASCII table value constraints. Resolves native string immutability restrictions by converting the dataset to an array via `.split("")` during the swap step, then re-compiling it with `.join("")`.
 
 ### 🔗 3. LinkedList (`src/LinkedList.ts`)
-*   **Role:** Manages linear node-based reference chains [source: 12].
-*   **Mechanics:** Features a structural tracking `Node` class [source: 12]. Elements must be traversed sequentially via lookup links ($O(N)$ tax) [source: 12]. It streamlines structural updates by swapping inner numeric `.data` properties directly, avoiding complex pointer chain re-linking [source: 12].
+*   **Role:** Manages linear node-based reference chains.
+*   **Mechanics:** Features a structural tracking `Node` class. Elements must be traversed sequentially via lookup links ($O(N)$ tax). It streamlines structural updates by swapping inner numeric `.data` properties directly, avoiding complex pointer chain re-linking.
 
 ---
 
 ## 🚦 Execution Sandbox (`src/index.ts`)
 
-Because the sorting engine is built into the classes themselves, runtime execution is beautifully simple [source: 13]. You call `.sort()` directly on the collection dataset instances [source: 13]:
+Because the sorting engine is built into the classes themselves, runtime execution is beautifully simple. You call `.sort()` directly on the collection dataset instances:
 
 ```typescript
 import { NumbersCollection } from "./NumbersCollection";
@@ -103,33 +102,33 @@ linkedList.print(); // Output: -10, 4, 500
 Want to run this project on your own machine? Here is everything you need to get set up.
 
 ### What you'll need first
-*   [Node.js](https://nodejs.org) (npm comes bundled with it) [source: 9]
-*   [Git](https://git-scm.com) [source: 9]
+*   [Node.js](https://nodejs.org) (npm comes bundled with it)
+*   [Git](https://git-scm.com)
 
 ### Setting things up
 
-1. **Grab the code** [source: 9]
+1. **Grab the code**
    ```bash
    git clone https://github.com
    cd Typescript-Exercises/sort
    ```
 
-2. **Install dependencies** [source: 9]
+2. **Install dependencies**
    ```bash
    npm install
    ```
-   *Note: This command reads `package.json` to configure tools like `nodemon`, `concurrently`, and `typescript` fresh on your local machine [source: 9].*
+   *Note: This command reads `package.json` to configure tools like `nodemon`, `concurrently`, and `typescript` fresh on your local machine.*
 
-3. **Start the workspace** [source: 9]
+3. **Start the workspace**
    ```bash
    npm start
    ```
-   *This kicks off two parallel automation routines via `concurrently`:* [source: 9]
-   *   `tsc -w` — The TypeScript compiler watches your source directory and builds changes incrementally [source: 9].
-   *   `nodemon` — Restarts your app automatically whenever newly compiled JavaScript lands inside the build folder [source: 9].
+   *This kicks off two parallel automation routines via `concurrently`:*
+   *   `tsc -w` — The TypeScript compiler watches your source directory and builds changes incrementally.
+   *   `nodemon` — Restarts your app automatically whenever newly compiled JavaScript lands inside the build folder.
 
 ---
 
 ## 📋 Compilation Notes
-*   **Environment Segregation:** All core TypeScript source code lives inside `src/`, while the automated compiler targets output files directly to the executable `build/` directory [source: 9].
-*   **Version Control:** The `node_modules/` and `build/` directories are intentionally excluded from git version tracking via `.gitignore` to maintain a lean, performance-focused repository footprint [source: 9].
+*   **Environment Segregation:** All core TypeScript source code lives inside `src/`, while the automated compiler targets output files directly to the executable `build/` directory.
+*   **Version Control:** The `node_modules/` and `build/` directories are intentionally excluded from git version tracking via `.gitignore` to maintain a lean, performance-focused repository footprint.
