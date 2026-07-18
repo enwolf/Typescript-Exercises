@@ -11,32 +11,32 @@ Instead of wrapping external collections inside a sorter object middleman, this 
 ```mermaid
 classDiagram
     class Sorter {
-        <<Abstract>>
-        +length: number
-        +compare(leftIndex, rightIndex) : boolean
-        +swap(leftIndex, rightIndex) : void
-        +sort() : void
+        <<abstract>>
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
+        +sort() void
     }
     class NumbersCollection {
-        +data: number[]
-        +length: number
-        +compare(leftIndex, rightIndex) : boolean
-        +swap(leftIndex, rightIndex) : void
+        +number[] data
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
     }
     class CharactersCollection {
-        +data: string
-        +length: number
-        +compare(leftIndex, rightIndex) : boolean
-        +swap(leftIndex, rightIndex) : void
+        +string data
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
     }
     class LinkedList {
-        +head: Node
-        +length: number
-        +add(data) : void
-        +at(index) : Node
-        +compare(leftIndex, rightIndex) : boolean
-        +swap(leftIndex, rightIndex) : void
-        +print() : void
+        +Node head
+        +number length
+        +add(data) void
+        +at(index) Node
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
+        +print() void
     }
     Sorter <|-- NumbersCollection
     Sorter <|-- CharactersCollection
