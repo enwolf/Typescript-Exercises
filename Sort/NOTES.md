@@ -531,3 +531,107 @@ sorter.sort();
 linkedList.print();
 ```
 
+---
+
+## 🏗️ Refactoring Phase: The Final Evolution (Abstract Classes & Inheritance)
+
+### 📋 Key Conceptual Takeaways
+* **Shifting the Architecture (Interfaces vs. Abstract Classes):** Interfaces are ideal when you want to link completely unrelated classes that share a structural contract [source: 1]. Abstract Classes are used when you want different classes to share a heavily coupled, core codebase [source: 1].
+* **The Template Method Pattern:** `Sorter` acts as a parent framework [source: 1]. It defines the absolute execution flow (`sort()`), but relies on its children to supply the exact context-driven implementation details (`length`, `compare`, `swap`) [source: 1].
+* **Eliminating the Middleman:** By switching from object composition (passing a collection into a constructor) to inheritance (`extends Sorter`), we completely remove the need to instantiate a separate `Sorter` object wrapper in our execution files [source: 1].
+
+### 💻 Abstract Sorter Parent Blueprint
+```typescript
+/**
+ * ============================================================================
+ * ABSTRACT CLASS: Sorter
+ * ROLE: Generic sorting engine parent blueprint.
+ * RESPONSIBILITY: Dictates a unified Bubble Sort routine via template methods. 
+ *                 Instead of wrapping external collections, child classes 
+ *                 inherit this class to acquire direct sorting powers by 
+ *                 implementing the required abstract template properties.
+ * ============================================================================
+ */
+export abstract class Sorter
+{
+    // Concrete child implementations must provide these underlying mechanics
+    abstract length: number;
+    abstract compare(leftIndex: number, rightIndex: number): boolean;
+    abstract swap(leftIndex: number, rightIndex: number): void;
+
+    /**
+     * Standard Bubble Sort implementation using Template Method Pattern.
+     * Iteratively bubbles the largest values directly within the child instance.
+     */
+    sort(): void
+    {
+        const { length } = this;
+
+        for (let i = 0; i < length; i++)
+        {
+            for (let j = 0; j < length - i - 1; j++)
+            {
+                if (this.compare(j, j + 1))
+                {
+                    this.swap(j, j + 1);
+                }
+            }
+        }
+    }
+}
+```
+---
+
+## 👶 Concrete Child Implementations: Inheriting the Sorting Engine
+
+### 📋 Key Conceptual Takeaways
+* **The `super()` Requirement:** In TypeScript, if a child class defines its own explicit `constructor()`, it *must* execute `super()` before accessing any local properties. This initializes the parent class context correctly.
+* **Implicit Inheritance:** If a child class (like `LinkedList`) omits an explicit constructor, TypeScript automatically calls `super()` under the hood during instantiation.
+* **Fulfilling Abstract Obligations:** By extending an abstract class, each child transitions from fulfilling an external interface contract to directly implementing the mandatory abstract template methods (`length`, `compare`, `swap`) locally.
+
+### 💻 Child Class Blueprint Summary
+*   **NumbersCollection:** Extends `Sorter`, implements constructor with `super()`, and defines `length`, `compare`, and `swap` for number arrays.
+*   **CharactersCollection:** Extends `Sorter`, handles string data by converting to an array for swapping, implementing the required methods.
+*   **LinkedList:** Extends `Sorter`, manages `Node` structures, and implements the required methods for sorting linked lists.
+
+*(Code implementations for all three classes are included in the source files, reflecting the inheritance structure described above.)*
+
+---
+
+## 🚦 Execution Phase: Simplified Runtime Polymorphism in index.ts
+
+### 📋 Key Conceptual Takeaways
+* **Cleaner Execution Sandbox:** We no longer need to pass data structures into an external wrapper object. The mid-tier `new Sorter()` objects are completely deleted.
+* **True Object-Oriented Style:** Because the classes inherit their sorting capabilities directly from the parent blueprint, we simply call `.sort()` directly on the collections themselves.
+* **Encapsulated Dependencies:** The `index.ts` file doesn't even need to import the `Sorter` class anymore, keeping our entry file clean and focused strictly on runtime orchestration.
+
+### 💻 Streamlined Sandbox Configuration (`index.ts`)
+```typescript
+import { NumbersCollection } from "./NumbersCollection";
+import { CharactersCollection } from "./CharactersCollection";
+import { LinkedList } from "./LinkedList";
+
+// 1. Testing our numbers array
+console.log("Numbers Collection Start\n");
+const numbersCollection = new NumbersCollection([10000, 10, 3, -5, 0]);
+numbersCollection.sort(); 
+console.log(numbersCollection.data + "\n\nNumbers Collection end\n");
+
+// 2. Testing our string characters
+console.log("Characters Collection Start\n");
+const charactersCollection = new CharactersCollection("Xaayb");
+charactersCollection.sort(); 
+console.log(charactersCollection.data + "\n\nCaracter Collection end\n");
+
+// 3. Testing our linear linked list
+const linkedList = new LinkedList();
+linkedList.add(500);
+linkedList.add(-10);
+linkedList.add(-3);
+linkedList.add(4);
+
+console.log("Linked List Collection Start\n");
+linkedList.sort(); 
+linkedList.print();
+console.log("\nLinked List Collection end");
+```
