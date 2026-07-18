@@ -9,40 +9,42 @@ An elegant, highly decoupled object-oriented sorting application built with Type
 Instead of wrapping external collections inside a sorter object middleman, this engine uses class inheritance. The master `Sorter` is a strict abstract parent blueprint that dictates the overarching Bubble Sort algorithm execution flow (`sort()`). It relies entirely on its child implementations to supply the custom, context-driven data mechanics.
 
 ```mermaid
-%%{init: {'theme': 'dark'}}%%
+%%{init: {'theme': 'default'}}%%
 classDiagram
     class Sorter {
-        <<Abstract>>
-        +length
-        +compare()
-        +swap()
-        +sort()
+        <<abstract>>
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
+        +sort() void
     }
     class NumbersCollection {
-        +data
-        +length
-        +compare()
-        +swap()
+        +number[] data
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
     }
     class CharactersCollection {
-        +data
-        +length
-        +compare()
-        +swap()
+        +string data
+        +number length
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
     }
     class LinkedList {
-        +head
-        +length
-        +add()
-        +at()
-        +compare()
-        +swap()
-        +print()
+        +Node head
+        +number length
+        +add(data) void
+        +at(index) Node
+        +compare(leftIndex, rightIndex) boolean
+        +swap(leftIndex, rightIndex) void
+        +print() void
     }
     Sorter <|-- NumbersCollection
     Sorter <|-- CharactersCollection
     Sorter <|-- LinkedList
 
+    classDef default fill:#f5f5f5,stroke:#333,stroke-width:1px,color:#ff8c00
+    class Sorter,NumbersCollection,CharactersCollection,LinkedList default
 ```
 
 ### The Abstract Contract
