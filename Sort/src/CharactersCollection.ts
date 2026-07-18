@@ -1,18 +1,24 @@
+import { Sorter } from "./Sorter";
+
 /**
  * ============================================================================
  * CLASS: CharactersCollection
- * ROLE: Text string data container manager.
+ * ROLE: Text string data container manager (Child Implementation).
  * RESPONSIBILITY: Exposes properties and methods to enable case-insensitive 
- *                 string sorting. Handles JavaScript string immutability constraints
- *                 internally to satisfy the 'Sortable' contract requirements.
+ *                 string sorting. Extends the abstract 'Sorter' class to 
+ *                 inherit built-in sorting capabilities.
  * ============================================================================
  */
-export class CharactersCollection
+export class CharactersCollection extends Sorter
 {
 
-    constructor(public data: string) { }
+    constructor(public data: string)
+    {
+        super();
+    }
 
     /**
+     * Abstract Template Property Implementation.
      * Exposes the total number of characters present inside the dataset.
      */
     get length(): number 
@@ -21,8 +27,8 @@ export class CharactersCollection
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Executes a case-insensitive character evaluation between two indices.
-     * Prevents uppercase ASCII values from clustering ahead of lowercase letters.
      */
     compare(leftIndex: number, rightIndex: number): boolean 
     {
@@ -30,6 +36,7 @@ export class CharactersCollection
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Swaps two characters by index. Converts string to an array temporarily 
      * to bypass JavaScript native string immutability restrictions.
      */

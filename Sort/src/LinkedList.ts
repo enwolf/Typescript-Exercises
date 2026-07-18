@@ -1,3 +1,5 @@
+import { Sorter } from "./Sorter";
+
 /**
  * ============================================================================
  * CLASS: Node
@@ -16,13 +18,13 @@ class Node
 /**
  * ============================================================================
  * CLASS: LinkedList
- * ROLE: Linear node-based collection manager.
+ * ROLE: Linear node-based collection manager (Child Implementation).
  * RESPONSIBILITY: Coordinates traversal, element indexing, and list mutation. 
- *                 Fulfills the 'Sortable' interface by exposing standardized 
- *                 length, compare, and swap hooks for the sorting algorithm.
+ *                 Extends the abstract 'Sorter' class to inherit built-in 
+ *                 sorting capabilities.
  * ============================================================================
  */
-export class LinkedList
+export class LinkedList extends Sorter
 {
     head: Node | null = null;
 
@@ -51,6 +53,7 @@ export class LinkedList
     }
 
     /**
+     * Abstract Template Property Implementation.
      * Traverses the list to calculate and return the total node count.
      */
     get length(): number 
@@ -103,8 +106,8 @@ export class LinkedList
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Compares the numeric values of two nodes at the given indices.
-     * Satisfies the Sortable interface contract.
      */
     compare(leftIndex: number, rightIndex: number): boolean 
     {
@@ -117,9 +120,8 @@ export class LinkedList
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Swaps the values of two nodes by overwriting their inner data.
-     * Cheats performance by avoiding complicated pointer re-linking.
-     * Satisfies the Sortable interface contract.
      */
     swap(leftIndex: number, rightIndex: number): void 
     {

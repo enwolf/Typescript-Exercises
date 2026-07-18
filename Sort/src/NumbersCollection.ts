@@ -1,18 +1,24 @@
+import { Sorter } from "./Sorter"
+
 /**
  * ============================================================================
  * CLASS: NumbersCollection
- * ROLE: Numeric array data container manager.
+ * ROLE: Numeric array data container manager (Child Implementation).
  * RESPONSIBILITY: Handles standard lookup, evaluation, and index-based swapping 
- *                 mechanics for an array of primitives to fulfill the 'Sortable' 
- *                 interface requirements.
+ *                 mechanics for an array of primitives. Extends the abstract 
+ *                 'Sorter' class to inherit built-in sorting capabilities.
  * ============================================================================
  */
-export class NumbersCollection
+export class NumbersCollection extends Sorter
 {
 
-    constructor(public data: number[]) { }
+    constructor(public data: number[])
+    {
+        super();
+    }
 
     /**
+     * Abstract Template Property Implementation.
      * Exposes the total element count of the underlying numeric array.
      */
     get length(): number
@@ -21,6 +27,7 @@ export class NumbersCollection
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Directly evaluates whether the number on the left is greater than the right.
      */
     compare(leftIndex: number, rightIndex: number): boolean 
@@ -29,6 +36,7 @@ export class NumbersCollection
     }
 
     /**
+     * Abstract Template Method Implementation.
      * Mutates the array positions by swapping index data via a temporary tracker variable.
      */
     swap(leftIndex: number, rightIndex: number): void 
