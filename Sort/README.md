@@ -8,29 +8,39 @@ An elegant, highly decoupled object-oriented sorting application built with Type
 
 Instead of wrapping external collections inside a sorter object middleman, this engine uses class inheritance [source: 11, 13]. The master `Sorter` is a strict abstract parent blueprint that dictates the overarching Bubble Sort algorithm execution flow (`sort()`) [source: 11]. It relies entirely on its child implementations to supply the custom, context-driven data mechanics [source: 11].
 
-```mermaid
 classDiagram
     class Sorter {
         <<Abstract>>
-        +length: number
-        +compare(leftIndex, rightIndex) boolean
-        +swap(leftIndex, rightIndex) void
+        +int length*
+        +compare(int leftIndex, int rightIndex) bool*
+        +swap(int leftIndex, int rightIndex) void*
         +sort() void
     }
     class NumbersCollection {
-        +data: number[]
+        +int[] data
+        +get length() int
+        +compare(int leftIndex, int rightIndex) bool
+        +swap(int leftIndex, int rightIndex) void
     }
     class CharactersCollection {
-        +data: string
+        +string data
+        +get length() int
+        +compare(int leftIndex, int rightIndex) bool
+        +swap(int leftIndex, int rightIndex) void
     }
     class LinkedList {
-        +head: Node
-        +add(data) void
+        +Node head
+        +get length() int
+        +add(int data) void
+        +at(int index) Node
+        +compare(int leftIndex, int rightIndex) bool
+        +swap(int leftIndex, int rightIndex) void
         +print() void
     }
     Sorter <|-- NumbersCollection
     Sorter <|-- CharactersCollection
     Sorter <|-- LinkedList
+
 ```
 
 ### The Abstract Contract
