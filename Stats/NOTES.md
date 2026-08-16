@@ -261,3 +261,121 @@ Because `tsc` and `nodemon` remain running in watch mode, the terminal stays act
 
 The instructor noted that this setup can sometimes produce errors when first starting the two processes together, but no errors occurred in this environment.
 
+### Adding Node Type Definitions
+
+Installed:
+
+```powershell
+npm install @types/node
+```
+
+This adds TypeScript type definitions for Node.js APIs.
+
+The exercise will read data from a `.csv` file, so the code needs to use Node's built-in file-system module:
+
+```ts
+import fs from "fs";
+```
+
+#### Why `@types/node` Is Needed
+
+- `fs` is already built into Node.js and provides the actual file-system functionality.
+- `@types/node` does **not** install `fs`.
+- Instead, it provides TypeScript with type information describing Node APIs such as `fs`, including their functions, parameters, and return types.
+- This allows TypeScript and VS Code to understand and type-check code that uses Node-specific functionality.
+
+The intended data flow for this exercise is:
+
+```text
+.csv file
+    ↓ Node `fs`
+file contents
+    ↓
+TypeScript code
+    ↓
+parse and work with the data
+```
+
+The earlier `"Hi there"` test in `src/index.ts` was replaced with the `fs` import as the exercise begins working with the CSV data.
+
+After installing `@types/node`, the module-related error disappeared. The remaining warning only indicates that `fs` has been imported but is not being used yet.
+
+### Node Type Definitions and `fs` Setup
+
+Installed Node.js type definitions:
+
+```powershell
+npm install @types/node
+```
+
+This allows TypeScript to understand Node-specific APIs such as the built-in `fs` file-system module.
+
+The exercise will use `fs` to read data from `football.csv`:
+
+```ts
+import fs from "fs";
+```
+
+- `fs` is already built into Node.js and provides the actual file-system functionality.
+- `@types/node` does **not** install `fs`.
+- Instead, it provides TypeScript with type information for Node APIs so they can be type-checked correctly.
+
+After installing `@types/node`, `package.json` and `package-lock.json` were updated to record the new dependency.
+
+#### Enabling Node Types in `tsconfig.json`
+
+Installing `@types/node` did not completely remove the TypeScript error because the generated `tsconfig.json` contained:
+
+```json
+"types": [],
+```
+
+This was changed to:
+
+```json
+"types": ["node"],
+```
+
+This allows TypeScript to include the installed Node type definitions and recognize modules such as `fs`.
+
+#### CommonJS and Import Compatibility
+
+After enabling the Node types, TypeScript reported:
+
+```text
+ECMAScript imports and exports cannot be written in a CommonJS file under 'verbatimModuleSyntax'.
+```
+
+The project currently uses:
+
+```json
+"type": "commonjs"
+```
+
+in `package.json`, while the generated `tsconfig.json` contained:
+
+```json
+"verbatimModuleSyntax": true
+```
+
+This conflicted with the instructor's import style:
+
+```ts
+import fs from "fs";
+```
+
+To keep following the instructor's code, changed:
+
+```json
+"verbatimModuleSyntax": true
+```
+
+to:
+
+```json
+"verbatimModuleSyntax": false
+```
+
+After this change, the `fs` import compiled successfully.
+
+These additional `tsconfig.json` changes were needed because the newer TypeScript configuration generated on this machine differs from the instructor's older setup.
