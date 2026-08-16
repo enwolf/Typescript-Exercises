@@ -379,3 +379,40 @@ to:
 After this change, the `fs` import compiled successfully.
 
 These additional `tsconfig.json` changes were needed because the newer TypeScript configuration generated on this machine differs from the instructor's older setup.
+
+### Parsing the CSV Into Match Records
+
+The CSV file is initially read as one large string:
+
+```ts
+fs.readFileSync("football.csv", { encoding: "utf-8" })
+```
+
+The data is then transformed in two steps:
+
+```ts
+const matches = fs
+    .readFileSync("football.csv", { encoding: "utf-8" })
+    .split("\n")
+    .map(
+        (row: string): string[] =>
+        {
+            return row.split(",");
+        }
+    );
+```
+
+- `.split("\n")` separates the file into individual match rows, producing a `string[]`.
+- `.map(...)` processes each row individually.
+- `row.split(",")` separates each match into its individual fields and returns a `string[]`.
+- Since every row becomes its own `string[]`, the final `matches` variable is a two-dimensional `string[][]`.
+
+The resulting structure can be thought of as:
+
+```text
+matches[match][field]
+```
+
+- The first index selects a complete match record.
+- The second index selects a specific field within that match.
+- Using only the first index, such as `matches[0]`, returns the entire match record.
