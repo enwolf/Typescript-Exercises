@@ -1,8 +1,8 @@
 import fs from "fs"; //fs stands for file system
 
-// Intermediate refactor: match result codes are now stored in named constants.
-// This improves readability, but the draw result ("D") is never used by the current logic.
-// Another developer could mistake it for unnecessary code and remove it.
+// Intermediate refactor: match result codes are now grouped together under MatchResult.
+// This makes their relationship clearer and keeps valid results like Draw from looking
+// like unrelated or unnecessary values.
 
 // Read the CSV file, split it into rows, then split each row into its individual fields
 const matches = fs
@@ -15,23 +15,26 @@ const matches = fs
         }
     );
 
-const homeWin = "H";
-const awayWin = "A";
-const draw = "D"; // Valid result even though this win-counting logic does not use it
+const MatchResult =
+{
+    HomeWin: "H",
+    AwayWin: "A",
+    Draw: "D"
+};
 
 let manUnitedWins = 0;
 
 // CSV fields:
 // [1] = home team
 // [2] = away team
-// [5] = match result: H = home win, A = away win
+// [5] = match result
 for (let match of matches) 
 {
-    if (match[1] === "Man United" && match[5] === homeWin)
+    if (match[1] === "Man United" && match[5] === MatchResult.HomeWin)
     {
         manUnitedWins++;
     }
-    else if (match[2] === "Man United" && match[5] === awayWin)
+    else if (match[2] === "Man United" && match[5] === MatchResult.AwayWin)
     {
         manUnitedWins++;
     }
