@@ -460,3 +460,83 @@ console.log("Man United won ${wins} games");
 ```
 
 would print `${wins}` literally.
+
+### Object Properties vs Enum Members
+
+The `MatchResult` object originally used colons:
+
+```ts
+const MatchResult =
+{
+    HomeWin: "H",
+    AwayWin: "A",
+    Draw: "D"
+};
+```
+
+Object properties use:
+
+```text
+name: value
+```
+
+After changing `MatchResult` to an enum:
+
+```ts
+enum MatchResult
+{
+    HomeWin = "H",
+    AwayWin = "A",
+    Draw = "D"
+}
+```
+
+the syntax changes to `=` because enum members are assigned values using:
+
+```text
+member = value
+```
+
+So the distinction is:
+
+```text
+Object property → name: value
+Enum member    → name = value
+```
+
+### JavaScript Object Bracket Notation
+
+Object properties can be accessed using either dot notation or bracket notation:
+
+```js
+MatchResult.HomeWin
+MatchResult["HomeWin"]
+```
+
+Both access the `HomeWin` property.
+
+Bracket notation looks similar to array indexing, but the value inside the brackets can be the name of an object property rather than an array index.
+
+JavaScript also allows a property to be created by assigning to it:
+
+```js
+const matchResult = {};
+
+matchResult["HomeWin"] = "H";
+```
+
+After the assignment, `matchResult` contains a `HomeWin` property with the value `"H"`.
+
+This is similar to assigning a value to an array position:
+
+```js
+const values = [];
+
+values[0] = "hello";
+```
+
+A useful general pattern is:
+
+```text
+container[key] = value
+```

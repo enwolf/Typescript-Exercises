@@ -1,9 +1,5 @@
 import fs from "fs"; //fs stands for file system
 
-// Intermediate refactor: match result codes are now grouped together under MatchResult.
-// This makes their relationship clearer and keeps valid results like Draw from looking
-// like unrelated or unnecessary values.
-
 // Read the CSV file, split it into rows, then split each row into its individual fields
 const matches = fs
     .readFileSync("football.csv", { encoding: "utf-8" })
@@ -15,11 +11,17 @@ const matches = fs
         }
     );
 
-const MatchResult =
+
+// Intermediate refactor: match result codes are now represented by a TypeScript enum.
+// This makes the valid match results explicit and keeps values like Draw as part of the
+// defined set even though the current win-counting logic does not use them.
+
+// enum - enumeration
+enum MatchResult 
 {
-    HomeWin: "H",
-    AwayWin: "A",
-    Draw: "D"
+    HomeWin = "H",
+    AwayWin = "A",
+    Draw = "D"
 };
 
 let manUnitedWins = 0;
