@@ -1,7 +1,8 @@
 import fs from "fs"; //fs stands for file system
 
-// Initial working approach used by the instructor as an example of code that will need refactoring.
-// The code relies on remembering what values like match[1], match[2], match[5], "H", and "A" represent.
+// Intermediate refactor: match result codes are now stored in named constants.
+// This improves readability, but the draw result ("D") is never used by the current logic.
+// Another developer could mistake it for unnecessary code and remove it.
 
 // Read the CSV file, split it into rows, then split each row into its individual fields
 const matches = fs
@@ -14,6 +15,10 @@ const matches = fs
         }
     );
 
+const homeWin = "H";
+const awayWin = "A";
+const draw = "D"; // Valid result even though this win-counting logic does not use it
+
 let manUnitedWins = 0;
 
 // CSV fields:
@@ -22,11 +27,11 @@ let manUnitedWins = 0;
 // [5] = match result: H = home win, A = away win
 for (let match of matches) 
 {
-    if (match[1] === "Man United" && match[5] === "H")
+    if (match[1] === "Man United" && match[5] === homeWin)
     {
         manUnitedWins++;
     }
-    else if (match[2] === "Man United" && match[5] === "A")
+    else if (match[2] === "Man United" && match[5] === awayWin)
     {
         manUnitedWins++;
     }
