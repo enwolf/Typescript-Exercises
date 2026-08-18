@@ -416,3 +416,47 @@ matches[match][field]
 - The first index selects a complete match record.
 - The second index selects a specific field within that match.
 - Using only the first index, such as `matches[0]`, returns the entire match record.
+
+### Template Literals
+
+JavaScript and TypeScript can use backticks instead of regular quotes to create a **template literal**:
+
+```ts
+console.log(`Man United won ${manUnitedWins} games`);
+```
+
+The `${...}` syntax inserts the value of an expression directly into the string.
+
+For example:
+
+```ts
+const wins = 18;
+
+console.log(`Man United won ${wins} games`);
+```
+
+produces:
+
+```text
+Man United won 18 games
+```
+
+This is a cleaner alternative to string concatenation:
+
+```ts
+console.log("Man United won " + wins + " games");
+```
+
+The expression inside `${...}` does not have to be only a variable:
+
+```ts
+console.log(`Next year: ${wins + 1} wins`);
+```
+
+Regular quoted strings do not interpolate `${...}`:
+
+```ts
+console.log("Man United won ${wins} games");
+```
+
+would print `${wins}` literally.
