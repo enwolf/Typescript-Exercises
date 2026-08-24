@@ -1,22 +1,12 @@
-import fs from "fs"; //fs stands for file system
+import { CsvFileReader } from "./CsvFileReader"; //imports our  CsvFileReader class
 
-// Read the CSV file, split it into rows, then split each row into its individual fields
-const matches = fs
-    .readFileSync("football.csv", { encoding: "utf-8" })
-    .split("\n")
-    .map(
-        (row: string): string[] =>
-        {
-            return row.split(",");
-        }
-    );
+// Create a CSV reader for the football data and load the parsed match records.
+// CsvFileReader now handles reading and parsing the CSV instead of index.ts.
+const reader = new CsvFileReader("football.csv");
+reader.read();
 
-
-// Intermediate refactor: match result codes are now represented by a TypeScript enum.
-// This makes the valid match results explicit and keeps values like Draw as part of the
-// defined set even though the current win-counting logic does not use them.
-
-// enum - enumeration
+// MatchResult defines the possible result codes stored in the CSV.
+// enum = enumeration
 enum MatchResult 
 {
     HomeWin = "H",
@@ -26,11 +16,12 @@ enum MatchResult
 
 let manUnitedWins = 0;
 
-// CSV fields:
+// reader.data contains the parsed CSV match records.
+// CSV fields used by the current analysis:
 // [1] = home team
 // [2] = away team
 // [5] = match result
-for (let match of matches) 
+for (let match of reader.data) 
 {
     if (match[1] === "Man United" && match[5] === MatchResult.HomeWin)
     {
