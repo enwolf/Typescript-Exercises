@@ -603,3 +603,87 @@ A useful general pattern is:
 ```text
 container[key] = value
 ```
+
+### Extracting CSV Reading Into `CsvFileReader`
+
+The CSV reading and parsing logic was moved out of `index.ts` and into a dedicated `CsvFileReader` class.
+
+Previously, `index.ts` was responsible for both:
+
+- Reading and parsing `football.csv`
+- Analyzing the match data
+
+The responsibilities are now separated:
+
+```text
+CsvFileReader.ts
+    ↓
+reads and parses the CSV
+    ↓
+stores parsed rows in data
+
+index.ts
+    ↓
+creates CsvFileReader
+    ↓
+calls read()
+    ↓
+analyzes reader.data
+```
+
+#### Constructor Parameter Property
+
+The constructor uses TypeScript's parameter-property shorthand:
+
+```ts
+constructor(public filename: string) { }
+```
+
+Adding `public` causes TypeScript to automatically create and store a `filename` property on the class.
+
+This allows:
+
+```ts
+this.filename
+```
+
+to be used inside `read()` without manually declaring and assigning the property in the constructor.
+
+No additional constructor logic is currently needed, so the constructor body remains empty.
+
+#### Reading the Data
+
+The `read()` method now owns the CSV reading and parsing logic:
+
+```ts
+read(): void
+{
+    this.data = fs
+        .readFileSync(this.filename, { encoding: "utf-8" })
+        .split("\n")
+        .map(
+            (row: string): string[] =>
+            {
+                return row.split(",");
+            });
+}
+```
+
+The parsing process itself is unchanged; it has simply been moved into the class responsible for reading CSV files.
+
+`index.ts` now creates the reader and asks it to load the file:
+
+```ts
+const reader = new CsvFileReader("football.csv");
+reader.read();
+```
+
+The match analysis then works with:
+
+```ts
+reader.data
+```
+
+instead of directly reading and parsing the CSV inside `index.ts`.
+
+This refactor separates **reading/parsing the data** from **using/analyzing the data**.
