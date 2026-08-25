@@ -1,18 +1,13 @@
-import { CsvFileReader } from "./CsvFileReader"; //imports our  CsvFileReader class
+import { CsvFileReader } from "./CsvFileReader"; // Import the CSV reader class.
+import { MatchResult } from "./MatchResult"; // Import the shared match result enum.
 
 // Create a CSV reader for the football data and load the parsed match records.
-// CsvFileReader now handles reading and parsing the CSV instead of index.ts.
+// CsvFileReader handles reading and parsing the CSV instead of index.ts.
 const reader = new CsvFileReader("football.csv");
-reader.read();
+console.log(reader.read());
 
-// MatchResult defines the possible result codes stored in the CSV.
-// enum = enumeration
-enum MatchResult 
-{
-    HomeWin = "H",
-    AwayWin = "A",
-    Draw = "D"
-};
+// Temporary output to inspect the parsed match data while refactoring.
+console.log(reader.data);
 
 let manUnitedWins = 0;
 
@@ -21,7 +16,7 @@ let manUnitedWins = 0;
 // [1] = home team
 // [2] = away team
 // [5] = match result
-for (let match of reader.data) 
+for (let match of reader.data)
 {
     if (match[1] === "Man United" && match[5] === MatchResult.HomeWin)
     {
