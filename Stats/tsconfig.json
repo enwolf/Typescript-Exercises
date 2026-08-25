@@ -21,7 +21,8 @@
     "declarationMap": true,
 
     // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
+    // Off while following the course: array indexing returns T instead of T | undefined
+    "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": true,
 
     // Style Options
