@@ -1,22 +1,31 @@
 import fs from "fs"; // Access Node's fs = file system module
-import { dateStringToDate } from "./utils"; // Import the date conversion function from utils.ts
-import { MatchResult } from "./MatchResult"; // Import the shared match result enum
 
-// Temporary implementation while the match-data structure is being refactored.
-// The tuple now defines the expected types, but CSV fields are still hardcoded
-// to their column positions inside read().
-type MatchData = [Date, string, string, number, number, MatchResult, string];
-
-export class CsvFileReader
+// Generic, abstract CSV reader.
+// TypeOfData is a generic type parameter that acts as a placeholder for
+// whatever type one parsed CSV row should eventually become.
+//
+// CsvFileReader handles the reusable file-reading/parsing process,
+// while a child class supplies the specific data type and row conversion.
+//
+// Example:
+// MatchReader extends CsvFileReader<MatchData>
+// means that, for MatchReader, TypeOfData = MatchData.
+export abstract class CsvFileReader<TypeOfData>
 {
-    // Stores all parsed CSV rows as an array of MatchData tuples.
-    data: MatchData[] = [];
+    // Stores all parsed CSV rows as an array of the generic TypeOfData.
+    // The child class determines what TypeOfData actually represents.
+    data: TypeOfData[] = [];
 
     // public filename automatically creates and stores the filename property.
     // No additional constructor logic is needed.
     constructor(public filename: string) { }
 
-    // Read the CSV file and transform the raw string data into MatchData records.
+    // Defines the row-conversion method that every child reader must provide.
+    // CsvFileReader supplies a raw string[] row, and the child class determines
+    // how that row is converted into its specific TypeOfData.
+    abstract mapRow(row: string[]): TypeOfData;
+
+    // Handles the reusable CSV reading and parsing workflow.
     read(): void
     {
         /*
@@ -24,8 +33,8 @@ export class CsvFileReader
          * 1. Read the entire CSV file as a string.
          * 2. Split the file into individual rows.
          * 3. First map: parse each row into its raw string fields.
-         * 4. Second map: transform those raw fields into a MatchData tuple
-         *    containing the types the application actually uses.
+         * 4. Second map: pass each string[] row to mapRow().
+         *    The child class converts it into its specific TypeOfData.
          */
         this.data = fs
             .readFileSync(this.filename, { encoding: "utf-8" })
@@ -36,19 +45,6 @@ export class CsvFileReader
                     return row.split(",");
                 }
             )
-            .map(
-                (row: string[]): MatchData =>
-                {
-                    return [
-                        dateStringToDate(row[0]),
-                        row[1],
-                        row[2],
-                        parseInt(row[3]),
-                        parseInt(row[4]),
-                        row[5] as MatchResult,
-                        row[6]
-                    ];
-                }
-            );
+            .map(this.mapRow);
     }
 }

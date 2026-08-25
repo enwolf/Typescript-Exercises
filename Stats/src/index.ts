@@ -1,18 +1,16 @@
-import { CsvFileReader } from "./CsvFileReader"; // Import the CSV reader class.
+import { MatchReader } from "./MatchReader"; // Import the match-specific CSV reader.
 import { MatchResult } from "./MatchResult"; // Import the shared match result enum.
 
-// Create a CSV reader for the football data and load the parsed match records.
-// CsvFileReader handles reading and parsing the CSV instead of index.ts.
-const reader = new CsvFileReader("football.csv");
-console.log(reader.read());
-
-// Temporary output to inspect the parsed match data while refactoring.
-console.log(reader.data);
+// Create a MatchReader for the football CSV and load the parsed match records.
+// MatchReader handles the match-specific conversion while CsvFileReader
+// provides the reusable CSV reading and parsing behavior.
+const reader = new MatchReader("football.csv");
+reader.read();
 
 let manUnitedWins = 0;
 
-// reader.data contains the parsed CSV match records.
-// CSV fields used by the current analysis:
+// reader.data contains MatchData tuples produced by MatchReader.
+// Tuple fields used by the current analysis:
 // [1] = home team
 // [2] = away team
 // [5] = match result
