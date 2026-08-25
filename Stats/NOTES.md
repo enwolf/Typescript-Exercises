@@ -687,3 +687,256 @@ reader.data
 instead of directly reading and parsing the CSV inside `index.ts`.
 
 This refactor separates **reading/parsing the data** from **using/analyzing the data**.
+
+### Splitting and Mapping a String Into an Array
+
+Given:
+
+```ts
+const dateParts = dateString
+    .split("/")
+    .map((value: string): number => {
+        return parseInt(value);
+    });
+```
+
+the entire expression on the right side is evaluated before the final result is assigned to `dateParts`.
+
+#### `split()` Creates the First Array
+
+If:
+
+```ts
+dateString = "10/08/2018";
+```
+
+then:
+
+```ts
+dateString.split("/");
+```
+
+returns:
+
+```ts
+["10", "08", "2018"]
+```
+
+`split()` takes the original string and creates a `string[]`.
+
+So conceptually:
+
+```text
+"10/08/2018"
+      ↓ split("/")
+["10", "08", "2018"]
+```
+
+`dateParts` has not been assigned yet. The method chain is still being evaluated.
+
+#### `map()` Creates a Transformed Array
+
+`map()` receives the array created by `split()` and calls a function once for each element.
+
+The course uses an arrow function:
+
+```ts
+.map((value: string): number => {
+    return parseInt(value);
+})
+```
+
+This converts each string into a number:
+
+```text
+["10", "08", "2018"]
+        ↓ map(...)
+[10, 8, 2018]
+```
+
+`map()` returns a new array, so the final result is a `number[]`.
+
+Only then is the result assigned:
+
+```ts
+const dateParts = [10, 8, 2018];
+```
+
+TypeScript infers that `dateParts` is a `number[]`, so it does not need to be explicitly declared as:
+
+```ts
+const dateParts: number[] = ...
+```
+
+#### Arrow Functions as Callbacks
+
+`map()` expects a function that it can call once for each value in the array.
+
+The compact arrow-function version:
+
+```ts
+.map((value: string): number => {
+    return parseInt(value);
+})
+```
+
+can be mentally expanded into a normal named function:
+
+```ts
+function convertToNumber(value: string): number
+{
+    return parseInt(value);
+}
+
+const dateParts = dateString
+    .split("/")
+    .map(convertToNumber);
+```
+
+The wiring is:
+
+```text
+split()
+    ↓
+creates an array
+    ↓
+map()
+    ↓
+receives convertToNumber
+    ↓
+calls it once for each array element
+    ↓
+collects the returned values into a new array
+```
+
+The arrow function is not doing anything fundamentally different. It defines the callback directly inside the call to `map()` instead of declaring and naming the function separately.
+
+Arrow functions are very common in modern JavaScript and TypeScript, so mentally expanding them into a normal named function can make the underlying wiring easier to see.
+
+### Importing Specific Functions From a Module
+
+TypeScript modules can export individual functions directly:
+
+```ts
+export const dateStringToDate = (dateString: string): Date =>
+{
+    ...
+};
+```
+
+Another file can then import that specific function:
+
+```ts
+import { dateStringToDate } from "./utils";
+```
+
+The `{ ... }` syntax is a **named import**. It selects a specific named export from the module.
+
+A module can contain several exported values:
+
+```ts
+export const dateStringToDate = ...
+export const anotherFunction = ...
+export class SomeClass
+{
+    ...
+}
+```
+
+and another file can choose only the ones it needs:
+
+```ts
+import { dateStringToDate, SomeClass } from "./utils";
+```
+
+So importing from a module does not mean the entire module has to become directly available under one variable or object. Individual exported functions, classes, constants, and other values can be imported by name.
+
+### Transforming CSV Rows Into Match Data
+
+`CsvFileReader` now uses two mapping steps.
+
+The first `map()` splits each CSV row into individual string fields:
+
+```ts
+.map(
+    (row: string): string[] =>
+    {
+        return row.split(",");
+    }
+)
+```
+
+The second `map()` converts selected fields into the types the program actually needs:
+
+```ts
+return [
+    dateStringToDate(row[0]),
+    row[1],
+    row[2],
+    parseInt(row[3]),
+    parseInt(row[4]),
+    row[5] as MatchResult,
+    row[6]
+];
+```
+
+The intended row structure is:
+
+```text
+[0] Date        - match date
+[1] string      - home team
+[2] string      - away team
+[3] number      - home goals
+[4] number      - away goals
+[5] MatchResult - result code
+[6] string      - referee
+```
+
+`dateStringToDate()` and `parseInt()` perform actual runtime conversions.
+
+```ts
+row[5] as MatchResult
+```
+
+is different. This is a **type assertion** that tells TypeScript to treat the existing string as a `MatchResult`; it does not convert the value at runtime.
+
+`MatchResult` was also moved into its own exported module so both `index.ts` and `CsvFileReader.ts` can use the same enum definition.
+
+The current row typing is still temporary:
+
+```ts
+data: string[][] = [];
+```
+
+and the second `map()` currently returns `any`, even though the transformed row now contains several different types. This structure will be refined as the exercise continues.
+
+### Newline After `return`
+
+A returned expression must begin on the same line as `return`.
+
+This works:
+
+```ts
+return [
+    ...
+];
+```
+
+This does not behave the same way:
+
+```ts
+return
+[
+    ...
+];
+```
+
+Because `return` is a restricted JavaScript statement, a newline immediately after it causes **automatic semicolon insertion**, effectively making it:
+
+```ts
+return;
+```
+
+This causes the function to return immediately and makes the array underneath unreachable.
+
+So even when using next-line formatting elsewhere, keep the returned expression on the same line as `return`.
