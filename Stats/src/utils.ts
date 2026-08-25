@@ -5,9 +5,8 @@ export const dateStringToDate = (dateString: string): Date =>
     //
     // e.g. "28/10/2018" becomes [28, 10, 2018].
     //
-    // At this stage TypeScript only knows dateParts is a number[],
-    // even though this function expects exactly three values.
-    // This structure will be refactored later to represent that expectation more clearly.
+    // TypeScript infers dateParts as a number[] even though this function
+    // expects the CSV date to contain exactly three values: day, month, and year.
     const dateParts = dateString
         .split("/")
         .map((value: string): number => {
