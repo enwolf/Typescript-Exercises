@@ -940,3 +940,184 @@ return;
 This causes the function to return immediately and makes the array underneath unreachable.
 
 So even when using next-line formatting elsewhere, keep the returned expression on the same line as `return`.
+
+#### Disabling `noUncheckedIndexedAccess`
+
+The generated TypeScript configuration originally used:
+
+```json
+"noUncheckedIndexedAccess": true
+```
+
+This caused indexed array access such as:
+
+```ts
+row[0]
+dateParts[2]
+```
+
+to be treated as potentially `undefined`, producing errors throughout the course code.
+
+The setting was changed to:
+
+```json
+"noUncheckedIndexedAccess": false
+```
+
+to better match the assumptions used by the exercise.
+
+Another option would be to use TypeScript's non-null assertion operator:
+
+```ts
+row[0]!
+```
+
+but this would require adding assertions throughout the CSV parsing code without adding any runtime validation.
+
+For this exercise, disabling the setting keeps the code focused on the concepts being taught.
+
+### Refactor #1 - Abstract Class and Generics
+
+The first major `CsvFileReader` refactor separates the general CSV-reading process from the match-specific conversion logic.
+
+Previously, `CsvFileReader` handled both:
+
+```text
+reading/splitting the CSV
+        +
+knowing what each football match field represents
+```
+
+The refactor separates those responsibilities:
+
+```text
+CsvFileReader
+    ↓
+general CSV reading/parsing behavior
+
+MatchReader
+    ↓
+football-match-specific row conversion
+```
+
+#### Generic Type Parameter
+
+`CsvFileReader` is now generic:
+
+```ts
+export abstract class CsvFileReader<TypeOfData>
+```
+
+`TypeOfData` is a placeholder for whatever type a parsed row should eventually become.
+
+For example:
+
+```ts
+data: TypeOfData[] = [];
+```
+
+means that the base class can store an array of parsed data without needing to know the exact type in advance.
+
+The conventional generic name would often be `T`:
+
+```ts
+CsvFileReader<T>
+```
+
+but `TypeOfData` makes the role of the generic type more explicit while learning.
+
+#### Abstract Class and Abstract Method
+
+`CsvFileReader` is also now an **abstract class**.
+
+It contains the reusable CSV-reading logic, but leaves the row-specific conversion to a child class.
+
+That required conversion is defined with an abstract method:
+
+```ts
+abstract mapRow(row: string[]): TypeOfData;
+```
+
+The parent class is effectively saying:
+
+> Any class extending me must know how to turn a raw `string[]` row into its specific `TypeOfData`.
+
+The parent does not provide the implementation itself.
+
+Its reusable `read()` method can still call:
+
+```ts
+.map(this.mapRow);
+```
+
+The CSV-reading process stays in the parent, while the child class supplies the actual `mapRow()` implementation.
+
+#### Extending the Generic Reader
+
+`MatchReader` extends the abstract reader:
+
+```ts
+export class MatchReader extends CsvFileReader<MatchData>
+```
+
+Two things are happening in the same declaration:
+
+```text
+extends CsvFileReader
+→ inherit the reusable CSV-reading behavior
+
+<MatchData>
+→ use MatchData as the generic TypeOfData
+```
+
+For `MatchReader`:
+
+```text
+TypeOfData = MatchData
+```
+
+So the parent's:
+
+```ts
+data: TypeOfData[]
+```
+
+effectively becomes:
+
+```ts
+data: MatchData[]
+```
+
+and:
+
+```ts
+mapRow(row: string[]): TypeOfData
+```
+
+effectively becomes:
+
+```ts
+mapRow(row: string[]): MatchData
+```
+
+`MatchReader` then implements `mapRow()` and contains the football-specific knowledge of what each CSV column represents.
+
+This moves the hardcoded match-column conversion out of the general-purpose `CsvFileReader` and into the class specifically responsible for match data.
+
+The resulting structure is:
+
+```text
+CsvFileReader<TypeOfData>
+    │
+    ├── reads the file
+    ├── splits the CSV data
+    └── requires mapRow()
+                ↓
+MatchReader extends CsvFileReader<MatchData>
+    │
+    └── implements mapRow() for MatchData
+                ↓
+            MatchData[]
+```
+
+This is the first refactoring approach demonstrated by the course, using **inheritance, an abstract class, an abstract method, and generics**. A later refactor will solve the same general problem using a different design.
