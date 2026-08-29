@@ -1201,3 +1201,42 @@ TypeScript continued compiling those files because they were still located under
 
 ```json
 "rootDir": "./src"
+```
+
+### Refactor #2 - Completed DataReader-Based Approach
+
+Refactor #2 is now complete and the application is working again.
+
+The main result of this refactor is that the responsibility for reading raw data and the responsibility for interpreting football match data are now separated without using inheritance.
+
+#### Final Responsibility Split
+
+`CsvFileReader.ts` is now responsible only for reading raw CSV data.
+
+It:
+
+- reads the file
+- splits the file into rows
+- splits each row into individual string fields
+- stores the result as `string[][]`
+
+Its data therefore remains completely generic:
+
+```text
+CsvFileReader
+    ↓
+reads CSV file
+    ↓
+string[][]
+```
+### Comparing Refactor #1 and Refactor #2
+
+We have now completed two different approaches to solving the same problem. Originally, `CsvFileReader` was doing two jobs at once: reading the CSV file and understanding what the football data meant. Both refactors separate those responsibilities so the general file-reading code no longer needs to know anything about football matches.
+
+In Refactor #1, `MatchReader` extends `CsvFileReader`. The general CSV-reading behavior lives in the parent class, and `MatchReader` inherits that behavior while supplying the football-specific conversion. Generics allow the parent class to stay reusable while `MatchReader` tells it that, in this case, the final data type is `MatchData`. The simplest way to think about this version is: **`MatchReader` IS A specialized `CsvFileReader`.**
+
+In Refactor #2, `MatchReader` no longer extends `CsvFileReader`. Instead, `CsvFileReader` only reads the file and produces raw `string[][]` data. `MatchReader` receives an object that satisfies the `DataReader` interface, uses that object to obtain the raw data, and then converts the rows into `MatchData`. `CsvFileReader` happens to satisfy that interface because it already has the required `read()` method and `data` property. The simplest way to think about this version is: **`MatchReader` HAS A `DataReader`.**
+
+This means the two approaches connect the same responsibilities in different ways. Refactor #1 uses **inheritance**: `MatchReader` gets the reading behavior from its parent class. Refactor #2 uses **composition**: `MatchReader` uses another object to provide the reading behavior. Refactor #2 also makes the two stages of the data especially clear: `CsvFileReader` holds the raw `string[][]`, while `MatchReader` holds the converted `MatchData[]`.
+
+Both versions ultimately do the same job and still produce the same result. The important lesson is that there can be more than one good way to separate responsibilities. Refactor #1 shows an inheritance-based solution using an abstract class and generics, while Refactor #2 shows a composition-based solution using an interface and a separate reader object. Keeping both versions in the project gives us a concrete example of the difference between **"IS A" inheritance** and **"HAS A" composition**.
