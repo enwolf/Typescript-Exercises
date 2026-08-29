@@ -1,20 +1,20 @@
-import { MatchReader } from "./MatchReader"; // Import the match-specific CSV reader.
-import { MatchResult } from "./MatchResult"; // Import the shared match result enum.
+import { MatchReader } from "./MatchReader";
+import { CsvFileReader } from "./CsvFileReader";
+import { MatchResult } from "./MatchResult";
 
-// Create a MatchReader for the football CSV and load the parsed match records.
-// MatchReader handles the match-specific conversion while CsvFileReader
-// provides the reusable CSV reading and parsing behavior.
-const reader = new MatchReader("football.csv");
-reader.read();
+// Create an object that satisfies the DataReader interface.
+const csvFileReader = new CsvFileReader("football.csv");
 
+// Create an instance of MatchReader and pass in something that
+// satisfies the DataReader interface.
+const matchReader = new MatchReader(csvFileReader);
+
+matchReader.load();
+
+// matchReader.matches can now be accessed anywhere.
 let manUnitedWins = 0;
 
-// reader.data contains MatchData tuples produced by MatchReader.
-// Tuple fields used by the current analysis:
-// [1] = home team
-// [2] = away team
-// [5] = match result
-for (let match of reader.data)
+for (let match of matchReader.matches)
 {
     if (match[1] === "Man United" && match[5] === MatchResult.HomeWin)
     {

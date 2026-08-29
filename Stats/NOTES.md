@@ -1121,3 +1121,83 @@ MatchReader extends CsvFileReader<MatchData>
 ```
 
 This is the first refactoring approach demonstrated by the course, using **inheritance, an abstract class, an abstract method, and generics**. A later refactor will solve the same general problem using a different design.
+
+
+### Refactor #2 - Starting the Alternate Approach
+
+We have now started the instructor's second refactoring approach for the CSV reader.
+
+Before changing the code for Refactor #2, we preserved the completed Refactor #1 implementation by creating a new directory:
+
+`src/inheritance/`
+
+The Refactor #1 versions of these files were moved into that directory:
+
+- `src/inheritance/CsvFileReader.ts`
+- `src/inheritance/MatchReader.ts`
+
+This keeps the first solution available as a separate example of the inheritance-based approach while the main files in `src/` are reused for Refactor #2.
+
+```text
+src/inheritance/
+    CsvFileReader.ts
+    MatchReader.ts
+
+    ↓
+
+completed Refactor #1
+abstract class + generics + inheritance
+```
+
+For Refactor #2, we are using the previously saved:
+
+`src/CsvFileReader.bak`
+
+as the new active:
+
+`src/CsvFileReader.ts`
+
+The `.bak` file contains the earlier version of `CsvFileReader` from before Refactor #1. By restoring that version as the working `CsvFileReader.ts`, Refactor #2 starts from the same earlier implementation instead of building on top of the inheritance-based refactor.
+
+```text
+src/CsvFileReader.bak
+    ↓
+restored as
+    ↓
+src/CsvFileReader.ts
+    ↓
+starting point for Refactor #2
+```
+
+#### Moving Match-Specific Logic into MatchReader
+
+As part of Refactor #2, match-specific functionality is being moved out of `CsvFileReader.ts` and into the new `MatchReader.ts`.
+
+`CsvFileReader.ts` now only handles the general CSV-reading work:
+
+- read the file
+- split it into rows
+- split each row into its individual string fields
+- store the result as `string[][]`
+
+The match-specific pieces have been moved into `MatchReader.ts`, including:
+
+- the `MatchData` tuple type
+- the `MatchResult` dependency
+- the `dateStringToDate()` dependency
+- the existing `string[]` to `MatchData` conversion logic
+
+This means `CsvFileReader` no longer needs to know what the CSV columns represent or how football match data should be converted.
+
+At the current stage of the refactor, the conversion logic has been moved into `MatchReader.ts` but is still commented out while the new structure is being built.
+
+#### Excluding the Preserved Inheritance Version from Compilation
+
+After moving the completed Refactor #1 files into:
+
+`src/inheritance/`
+
+TypeScript continued compiling those files because they were still located underneath the configured:
+
+```json
+"rootDir": "./src"

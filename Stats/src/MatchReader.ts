@@ -1,33 +1,45 @@
-import { CsvFileReader } from "./CsvFileReader";
-import { dateStringToDate } from "./utils";
-import { MatchResult } from "./MatchResult";
+import { dateStringToDate } from "./utils"; // Import the date conversion function from utils.ts
+import { MatchResult } from "./MatchResult"; // Import the shared match result enum
 
-// Defines the fixed structure and types for one parsed football match.
+// Defines the expected structure and types for one parsed football match.
 // [date, home team, away team, home goals, away goals, result, referee]
 type MatchData = [Date, string, string, number, number, MatchResult, string];
 
-
-// MatchReader extends CsvFileReader, so it inherits the reusable CSV-reading
-// behavior defined by the abstract parent class.
-//
-// <MatchData> supplies the concrete type for CsvFileReader's generic TypeOfData.
-// For this subclass, TypeOfData = MatchData, so inherited data is effectively
-// MatchData[] and mapRow() must return a MatchData tuple.
-export class MatchReader extends CsvFileReader<MatchData>
+// Defines the structure required for an object that can supply raw CSV data.
+interface DataReader
 {
-    // Provides the match-specific conversion required by CsvFileReader.
-    // The parent class handles reading and splitting the CSV;
-    // this method defines how one raw string[] row becomes a MatchData tuple.
-    mapRow(row: string[]): MatchData
+    read(): void;
+    data: string[][];
+}
+
+export class MatchReader
+{
+    // Stores the converted football match records after load() has been called.
+    matches: MatchData[] = [];
+
+    // Store a DataReader that MatchReader can use to obtain the data rows.
+    constructor(public reader: DataReader) { }
+
+    // Read the raw data through the supplied DataReader and convert each
+    // string[] row into a typed MatchData tuple.
+    // In this case, we are loading match data from football.csv.
+    load(): void
     {
-        return [
-            dateStringToDate(row[0]),
-            row[1],
-            row[2],
-            parseInt(row[3]),
-            parseInt(row[4]),
-            row[5] as MatchResult,
-            row[6]
-        ];
+        this.reader.read();
+
+        this.matches = this.reader.data.map(
+            (row: string[]): MatchData =>
+            {
+                return [
+                    dateStringToDate(row[0]),
+                    row[1],
+                    row[2],
+                    parseInt(row[3]),
+                    parseInt(row[4]),
+                    row[5] as MatchResult,
+                    row[6]
+                ];
+            }
+        );
     }
 }
