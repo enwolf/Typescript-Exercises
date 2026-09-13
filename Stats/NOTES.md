@@ -1298,3 +1298,76 @@ Updated:
 - the `outputTarget` property name in `Summery.ts` was corrected so the constructor and `buildAndPrintReport()` use the same capitalization
 - `index.ts` was updated to import `WinsAnalysis`, `ConsoleReport`, and `Summery`, create those concrete components, and pass them into the new reporting pipeline
 - `index.ts` now calls `summery.buildAndPrintReport(matchReader.matches)` instead of containing the reporting logic itself
+
+#### Adding HtmlReport and Completing Refactor #3
+
+The final step in Refactor #3 was to add another `OutputTarget` implementation so the analysis could be written to an HTML file instead of only being printed to the console.
+
+A new file was created:
+
+`src/ReportTargets/HtmlReport.ts`
+
+`HtmlReport` implements the same `OutputTarget` interface as `ConsoleReport`:
+
+```ts
+export class HtmlReport implements OutputTarget
+```
+
+Its `print()` method receives the report string produced by the analyzer, inserts it into a small HTML template, and writes the completed HTML to `report.html` using Node's file system module:
+
+```ts
+fs.writeFileSync("report.html", html);
+```
+
+The generated HTML contains:
+
+```html
+<div>
+    <h1>Analysis OutPut</h1>
+    <div>Team Man United won 18 games</div>
+</div>
+```
+
+Opening `report.html` in the browser confirmed that the report was generated correctly and displayed:
+
+```text
+Analysis OutPut
+
+Team Man United won 18 games
+```
+
+`index.ts` was updated to import `HtmlReport` and use it as the `OutputTarget` supplied to `Summery`:
+
+```ts
+const summery = new Summery
+(
+    new WinsAnalysis("Man United"),
+    new HtmlReport()
+);
+
+summery.buildAndPrintReport(matchReader.matches);
+```
+
+Previously, `Summery` was using `ConsoleReport`. The important part of this change is that `WinsAnalysis`, `MatchReader`, and `Summery` did not need to be rewritten. We only replaced one `OutputTarget` with another.
+
+The reporting flow is now:
+
+```text
+MatchData[]
+    ↓
+WinsAnalysis
+    ↓
+report string
+    ↓
+Summery
+    ↓
+HtmlReport
+    ↓
+report.html
+```
+
+This demonstrates the purpose of separating the analyzer and output components. `WinsAnalysis` is responsible for producing the report, while `HtmlReport` is responsible for deciding how that report is output. Because both `ConsoleReport` and `HtmlReport` satisfy the `OutputTarget` interface, either one can be supplied to `Summery`.
+
+During this step, an accidentally duplicated `CsvFileReader.ts` inside `src/inheritance/` was also removed. The active `src/CsvFileReader.ts` remains the CSV reader used by the current refactor.
+
+At this point, Refactor #3 is complete. The application now separates reading the data, converting it into `MatchData`, analyzing it, and outputting the resulting report into independent components.
