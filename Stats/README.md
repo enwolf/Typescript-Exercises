@@ -112,19 +112,23 @@ By the end of the project, reading, converting, analyzing, and reporting the dat
 
 ## Running the Project
 
-Install the dependencies:
+From inside the `Stats/` directory, install the project dependencies:
 
 ```powershell
 npm install
 ```
 
-Start the development environment:
+Then start the development environment:
 
 ```powershell
 npm start
 ```
 
-The project runs the TypeScript compiler in watch mode alongside `nodemon`, with both processes managed through `concurrently`. :contentReference[oaicite:4]{index=4}
+The `npm start` script runs the TypeScript compiler in watch mode alongside `nodemon`, with both processes managed through `concurrently`.
+
+The current configuration generates a `report.html` file containing the analysis results. Open that file in a browser to view the report.
+
+Press `Ctrl+C` in the terminal to stop the development processes.
 
 ## Concepts Practiced
 
