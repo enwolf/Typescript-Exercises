@@ -1,9 +1,6 @@
 import { dateStringToDate } from "./utils"; // Import the date conversion function from utils.ts
 import { MatchResult } from "./MatchResult"; // Import the shared match result enum
-
-// Defines the expected structure and types for one parsed football match.
-// [date, home team, away team, home goals, away goals, result, referee]
-type MatchData = [Date, string, string, number, number, MatchResult, string];
+import { MatchData } from "./MatchData";
 
 // Defines the structure required for an object that can supply raw CSV data.
 interface DataReader
