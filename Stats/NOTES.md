@@ -1264,3 +1264,16 @@ At this point, Refactor #3 has introduced:
 - a `Summery` class that receives both components
 
 This gives the refactor its initial component-based structure, with the shared match data, analysis responsibility, and output responsibility now beginning to exist as separate pieces.
+
+#### Adding the WinsAnalysis Component
+
+The next step in Refactor #3 was to move the Man United win-counting logic out of `index.ts` and into its own analysis component.
+
+A new file was created:
+
+`src/analyzers/WinsAnalysis.ts`
+
+`WinsAnalysis` implements the `Analyzer` interface:
+
+```ts
+export class WinsAnalysis implements Analyzer
