@@ -1370,4 +1370,65 @@ This demonstrates the purpose of separating the analyzer and output components. 
 
 During this step, an accidentally duplicated `CsvFileReader.ts` inside `src/inheritance/` was also removed. The active `src/CsvFileReader.ts` remains the CSV reader used by the current refactor.
 
-At this point, Refactor #3 is complete. The application now separates reading the data, converting it into `MatchData`, analyzing it, and outputting the resulting report into independent components.
+#### Adding a Static Factory Method
+
+As the final step in Refactor #3, `Summery` was given a static factory method for creating one of the common report configurations.
+
+Previously, `index.ts` created the analyzer and output target directly:
+
+```ts
+const summery = new Summery
+(
+    new WinsAnalysis("Man United"),
+    new HtmlReport()
+);
+```
+
+This works, but it means `index.ts` needs to know which concrete classes must be created and how they should be connected.
+
+The new static method moves that setup into `Summery`:
+
+```ts
+static winsAnalysisWithHtmlreport(teamName: string): Summery
+{
+    return new Summery
+    (
+        new WinsAnalysis(teamName),
+        new HtmlReport()
+    );
+}
+```
+
+Because the method is declared with `static`, it belongs to the `Summery` class itself rather than to an individual `Summery` object. That is why we can call it directly on the class:
+
+```ts
+Summery.winsAnalysisWithHtmlreport("Man United");
+```
+
+We do not need to create a `Summery` object first in order to call the method because the method is `static` and belongs to the `Summery` class itself.
+
+The static method receives the team name, creates a `WinsAnalysis` for that team, creates an `HtmlReport`, passes both objects into the normal `Summery` constructor, and returns the completed `Summery` object.
+
+This allows `index.ts` to use:
+
+```ts
+const summery = Summery.winsAnalysisWithHtmlreport("Man United");
+```
+
+instead of manually creating and connecting the `WinsAnalysis` and `HtmlReport` components.
+
+The regular constructor still exists, so we can still create a `Summery` manually with any `Analyzer` and `OutputTarget` we want. The static method simply provides a convenient named way to create this particular configuration.
+
+This is commonly called a **static factory method** because the static method handles creating and returning a configured instance of the class.
+
+The same approach was also added to `MatchReader` with:
+
+```ts
+const matchReader = MatchReader.fromCsv("football.csv");
+```
+
+The `fromCsv()` static method creates a `CsvFileReader` using the supplied filename, passes that reader into the normal `MatchReader` constructor, and returns the configured `MatchReader`. The regular constructor still remains available if we want to provide a different object that satisfies the `DataReader` interface.
+
+Using these two static factory methods also allowed us to simplify `index.ts` considerably. Previously, it directly imported `MatchReader`, `CsvFileReader`, `WinsAnalysis`, `Summery`, and `HtmlReport`. Since `MatchReader.fromCsv()` now creates the `CsvFileReader`, and `Summery.winsAnalysisWithHtmlreport()` creates the `WinsAnalysis` and `HtmlReport`, those three direct imports could be removed. `index.ts` now only needs to import `MatchReader` and `Summery`. The other classes are still being used; their creation is simply handled inside the factory methods instead of directly inside `index.ts`.
+
+At this point, Refactor #3 is complete. The application now separates the responsibilities of reading the data, converting it into `MatchData`, analyzing that data, and outputting the resulting report into independent components.
