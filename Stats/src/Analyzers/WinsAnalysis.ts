@@ -27,6 +27,6 @@ export class WinsAnalysis implements Analyzer
         }
 
         // Return the current analysis result.
-        return "Team ${this.team} won ${wins} games";
+        return `Team ${this.teamName} won ${wins} games`;
     }
 }
