@@ -1,5 +1,5 @@
-import { dateStringToDate } from "./utils"; // Import the date conversion function from utils.ts
-import { MatchResult } from "./MatchResult"; // Import the shared match result enum
+import { dateStringToDate } from "./utils";
+import { MatchResult } from "./MatchResult";
 import { MatchData } from "./MatchData";
 
 // Defines the structure required for an object that can supply raw CSV data.
@@ -11,7 +11,7 @@ interface DataReader
 
 export class MatchReader
 {
-    // Stores the converted football match records after load() has been called.
+    // Stores the converted football match records using the shared MatchData type.
     matches: MatchData[] = [];
 
     // Store a DataReader that MatchReader can use to obtain the data rows.
