@@ -1240,3 +1240,27 @@ In Refactor #2, `MatchReader` no longer extends `CsvFileReader`. Instead, `CsvFi
 This means the two approaches connect the same responsibilities in different ways. Refactor #1 uses **inheritance**: `MatchReader` gets the reading behavior from its parent class. Refactor #2 uses **composition**: `MatchReader` uses another object to provide the reading behavior. Refactor #2 also makes the two stages of the data especially clear: `CsvFileReader` holds the raw `string[][]`, while `MatchReader` holds the converted `MatchData[]`.
 
 Both versions ultimately do the same job and still produce the same result. The important lesson is that there can be more than one good way to separate responsibilities. Refactor #1 shows an inheritance-based solution using an abstract class and generics, while Refactor #2 shows a composition-based solution using an interface and a separate reader object. Keeping both versions in the project gives us a concrete example of the difference between **"IS A" inheritance** and **"HAS A" composition**.
+
+#### Refactor #3 - Initial Component Setup
+
+At this point, Refactor #3 has introduced several structural changes to prepare the application for a component-based approach.
+
+`MatchData` has been moved into its own shared `MatchData.ts` file so it can be imported and reused by multiple parts of the application. `MatchReader.ts` has been updated to import that shared `MatchData` type instead of defining it locally.
+
+A new `Summery.ts` file has also been created. This file introduces two new interfaces:
+
+- `Analyzer`, which defines a component that can analyze `MatchData[]` and return a string result
+- `OutputTarget`, which defines a component that can receive that string result and output it somewhere
+
+`Summery.ts` also introduces the new `Summery` class, which receives both an `Analyzer` and an `OutputTarget` through its constructor.
+
+At this point, Refactor #3 has introduced:
+
+- a shared `MatchData.ts` file
+- an updated `MatchReader.ts` that imports the shared `MatchData` type
+- a new `Summery.ts` file
+- an `Analyzer` interface
+- an `OutputTarget` interface
+- a `Summery` class that receives both components
+
+This gives the refactor its initial component-based structure, with the shared match data, analysis responsibility, and output responsibility now beginning to exist as separate pieces.
