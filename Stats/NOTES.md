@@ -1271,9 +1271,30 @@ The next step in Refactor #3 was to move the Man United win-counting logic out o
 
 A new file was created:
 
-`src/analyzers/WinsAnalysis.ts`
+`src/Analyzers/WinsAnalysis.ts`
 
 `WinsAnalysis` implements the `Analyzer` interface:
 
 ```ts
 export class WinsAnalysis implements Analyzer
+```
+
+This means `WinsAnalysis` provides the `run()` method required by `Analyzer` and is responsible for performing the win-counting analysis on the supplied `MatchData[]`.
+
+The win-counting loop that previously lived in `index.ts` was moved into `WinsAnalysis.run()`. This continues the component-based refactor by moving the actual analysis responsibility out of the main application file and into a dedicated analyzer component.
+
+This step also added new component files and directories, reorganized some existing code, and connected the reporting pipeline.
+
+Newly created:
+
+- `src/ReportTargets/` directory
+- `src/ReportTargets/ConsoleReport.ts`, which implements `OutputTarget` and prints a completed report string to the console
+- `src/Analyzers/` directory, which now contains `WinsAnalysis.ts`
+
+Updated:
+
+- `WinsAnalysis.ts` was moved into `src/Analyzers/`, so its relative imports were updated to point back to `Summery.ts`, `MatchData.ts`, and `MatchResult.ts`
+- `Summery.ts` gained `buildAndPrintReport()`, which runs the configured `Analyzer`, receives its report string, and passes that string to the configured `OutputTarget`
+- the `outputTarget` property name in `Summery.ts` was corrected so the constructor and `buildAndPrintReport()` use the same capitalization
+- `index.ts` was updated to import `WinsAnalysis`, `ConsoleReport`, and `Summery`, create those concrete components, and pass them into the new reporting pipeline
+- `index.ts` now calls `summery.buildAndPrintReport(matchReader.matches)` instead of containing the reporting logic itself
