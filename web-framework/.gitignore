@@ -1,0 +1,4 @@
+# Dependencies and generated Parcel files
+node_modules/
+.parcel-cache/
+dist/
