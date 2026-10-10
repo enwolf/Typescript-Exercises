@@ -1,5 +1,10 @@
 <html>
     <body>
-        <script src="./src/index.ts"></script>
+        <!--
+        The instructor's older Parcel setup works without type="module".
+        Our current Parcel 2 setup requires it once index.ts uses ES module
+        syntax such as import/export, so this attribute is added for compatibility.
+        -->
+        <script type="module" src="./src/index.ts"></script>
     </body>
 </html>
